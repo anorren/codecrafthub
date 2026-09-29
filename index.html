@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CodeCraftHub: Your Learning Management Platform</title>
+<style>
+  :root {
+    --primary: #8B5CF6;
+    --primary-dark: #7C3AED;
+    --primary-light: #EDE9FE;
+    --accent: #F59E0B;
+    --accent-dark: #D97706;
+    --accent-light: #FEF3C7;
+    --danger: #EF4444;
+    --danger-dark: #DC2626;
+    --danger-light: #FEE2E2;
+    --success: #10B981;
+    --success-light: #D1FAE5;
+    --info: #3B82F6;
+    --info-light: #DBEAFE;
+    --ink: #1F2937;
+    --ink-soft: #4B5563;
+    --muted: #6B7280;
+    --line: #E5E7EB;
+    --line-soft: #F3F4F6;
+    --bg: #F9FAFB;
+    --surface: #FFFFFF;
+    --shadow-sm: 0 1px 2px rgba(17,24,39,.06);
+    --shadow: 0 4px 12px rgba(17,24,39,.08);
+    --shadow-lg: 0 12px 32px rgba(17,24,39,.14);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --ring: 0 0 0 3px rgba(139,92,246,.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Header */
+  .topbar {
+    background: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 55%, #A78BFA 100%);
+    color: #fff;
+    padding: 28px 20px 26px;
+    box-shadow: var(--shadow);
+  }
+  .topbar-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .brand-mark {
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.18);
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 20px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255,255,255,.28);
+  }
+  .topbar h1 {
+    margin: 0;
+    font-size: clamp(20px, 3.4vw, 28px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .topbar .subtitle {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: rgba(255,255,255,.85);
+  }
+
+  /* Layout */
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 20px 64px;
+  }
+
+  /* Cards / panels */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Add form */
+  .add-form {
+    padding: 22px;
+    margin-bottom: 26px;
+  }
+  .panel-title {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 0 16px;
+    font-size: 18px; font-weight: 700;
+    color: var(--ink);
+  }
+  .panel-title .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 4px var(--primary-light);
+  }
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.full { grid-column: 1 / -1; }
+  label {
+    font-size: 13px; font-weight: 600; color: var(--ink-soft);
+  }
+  label .req { color: var(--danger); margin-left: 2px; }
+  input, select, textarea {
+    font: inherit;
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    width: 100%;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  textarea { min-height: 84px; resize: vertical; }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: var(--ring);
+  }
+  input.invalid, select.invalid, textarea.invalid {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(239,68,68,.18);
+  }
+  .field-error {
+    font-size: 12px; color: var(--danger-dark);
+    display: none;
+  }
+  .field.has-error .field-error { display: block; }
+
+  .form-actions {
+    margin-top: 18px;
+    display: flex; gap: 12px; flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* Buttons */
+  .btn {
+    font: inherit;
+    font-weight: 600;
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 10px 18px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background .15s, border-color .15s, color .15s, transform .05s, box-shadow .15s;
+    user-select: none;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: none; box-shadow: var(--ring); }
+  .btn[disabled] { opacity: .55; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover:not([disabled]) { background: var(--primary-dark); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover:not([disabled]) { background: var(--accent-dark); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover:not([disabled]) { background: var(--danger-dark); }
+  .btn-ghost {
+    background: #fff; color: var(--ink-soft);
+    border-color: var(--line);
+  }
+  .btn-ghost:hover:not([disabled]) { background: var(--line-soft); color: var(--ink); }
+  .btn-sm { padding: 7px 12px; font-size: 13px; }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .toolbar h2 {
+    margin: 0; font-size: 20px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .count-badge {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-size: 12px; font-weight: 700;
+    padding: 3px 10px; border-radius: 999px;
+  }
+  .view-toggle {
+    display: inline-flex; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+    overflow: hidden; background: #fff;
+  }
+  .view-toggle button {
+    border: none; background: #fff; color: var(--muted);
+    padding: 8px 14px; font: inherit; font-weight: 600; font-size: 13px;
+    cursor: pointer; transition: background .15s, color .15s;
+  }
+  .view-toggle button.active { background: var(--primary); color: #fff; }
+  .view-toggle button:focus-visible { outline: none; box-shadow: var(--ring); }
+
+  /* Loading bar */
+  .loading-bar {
+    height: 3px; width: 100%;
+    background: transparent; overflow: hidden;
+    display: none;
+  }
+  .loading-bar.active { display: block; }
+  .loading-bar::after {
+    content: ""; display: block; height: 100%; width: 40%;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    animation: slide 1.1s infinite ease-in-out;
+  }
+  @keyframes slide {
+    0% { transform: translateX(-120%); }
+    100% { transform: translateX(320%); }
+  }
+
+  /* Cards grid */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
+  }
+  .course-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    padding: 18px;
+    display: flex; flex-direction: column;
+    transition: box-shadow .18s, transform .18s, border-color .18s;
+    animation: pop .25s ease;
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .course-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: #D8D0FB; }
+  .card-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 12px; margin-bottom: 10px;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 700; color: var(--ink);
+    margin: 0; word-break: break-word; line-height: 1.35;
+  }
+  .card-desc {
+    color: var(--ink-soft); font-size: 14px; margin: 0 0 14px;
+    word-break: break-word; flex: 1;
+  }
+  .card-meta {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 16px; font-size: 13px;
+  }
+  .meta-row { display: flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+  .meta-row svg { flex-shrink: 0; }
+  .meta-row .label { color: var(--muted); }
+  .meta-row .value { font-weight: 600; color: var(--ink); }
+
+  /* Status badges */
+  .badge {
+    font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+  }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .badge-not-started { background: var(--line-soft); color: #6B7280; }
+  .badge-in-progress { background: var(--info-light); color: #1D4ED8; }
+  .badge-completed { background: var(--success-light); color: #047857; }
+
+  .card-actions { display: flex; gap: 8px; margin-top: auto; }
+
+  /* Table */
+  .table-scroll { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--line); }
+  table.courses {
+    width: 100%; border-collapse: collapse; background: var(--surface);
+    min-width: 720px;
+  }
+  table.courses th, table.courses td {
+    text-align: left; padding: 13px 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px; vertical-align: middle;
+  }
+  table.courses th {
+    background: var(--line-soft); font-size: 12px;
+    text-transform: uppercase; letter-spacing: .04em; color: var(--muted);
+  }
+  table.courses tbody tr:last-child td { border-bottom: none; }
+  table.courses tbody tr { transition: background .12s; }
+  table.courses tbody tr:hover { background: #FAF9FF; }
+  table.courses td.name { font-weight: 600; color: var(--ink); max-width: 220px; word-break: break-word; }
+  table.courses td.desc { color: var(--ink-soft); max-width: 320px; word-break: break-word; }
+  table.courses td.actions { white-space: nowrap; }
+  table.courses td.actions .btn { margin-right: 6px; }
+
+  /* Empty + error states */
+  .state {
+    text-align: center; padding: 56px 20px;
+    color: var(--muted);
+  }
+  .state .icon {
+    width: 56px; height: 56px; margin: 0 auto 14px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--primary-light); color: var(--primary-dark);
+  }
+  .state h3 { margin: 0 0 6px; color: var(--ink); font-size: 17px; }
+  .state p { margin: 0; font-size: 14px; }
+  .state.error .icon { background: var(--danger-light); color: var(--danger-dark); }
+
+  /* Inline spinner */
+  .spinner {
+    width: 15px; height: 15px;
+    border: 2px solid rgba(255,255,255,.45);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: inline-block;
+  }
+  .spinner.dark {
+    border-color: rgba(139,92,246,.25);
+    border-top-color: var(--primary);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Toasts */
+  .toast-stack {
+    position: fixed; right: 20px; bottom: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 200; max-width: 360px;
+  }
+  .toast {
+    background: var(--ink);
+    color: #fff; padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    font-size: 14px; font-weight: 500;
+    display: flex; align-items: flex-start; gap: 10px;
+    animation: toastIn .25s ease;
+    border-left: 4px solid var(--primary);
+  }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .toast.success { border-left-color: var(--success); }
+  .toast.error { border-left-color: var(--danger); }
+  .toast.info { border-left-color: var(--info); }
+  .toast .t-close {
+    margin-left: auto; background: transparent; border: none; color: rgba(255,255,255,.7);
+    cursor: pointer; font-size: 16px; line-height: 1; padding: 0;
+  }
+  .toast .t-close:hover { color: #fff; }
+
+  /* Modal */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(17,24,39,.55);
+    display: none; align-items: center; justify-content: center;
+    padding: 20px; z-index: 150;
+    animation: fade .15s ease;
+  }
+  .overlay.active { display: flex; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    width: 100%; max-width: 540px;
+    max-height: 92vh; overflow-y: auto;
+    animation: rise .2s ease;
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 22px; border-bottom: 1px solid var(--line);
+  }
+  .modal-head h3 { margin: 0; font-size: 18px; font-weight: 700; }
+  .modal-close {
+    background: transparent; border: none; cursor: pointer;
+    color: var(--muted); font-size: 22px; line-height: 1; padding: 4px;
+    border-radius: 6px;
+  }
+  .modal-close:hover { background: var(--line-soft); color: var(--ink); }
+  .modal-close:focus-visible { outline: none; box-shadow: var(--ring); }
+  .modal-body { padding: 22px; }
+  .modal-foot {
+    padding: 16px 22px; border-top: 1px solid var(--line);
+    display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;
+    background: var(--line-soft); border-radius: 0 0 var(--radius) var(--radius);
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .toolbar h2 { justify-content: space-between; }
+    .view-toggle { align-self: flex-start; }
+    .wrap { padding: 22px 14px 56px; }
+    .modal-foot { flex-direction: column-reverse; }
+    .modal-foot .btn { width: 100%; justify-content: center; }
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+  <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-mark" aria-hidden="true">C</div>
+    <div>
+      <h1>CodeCraftHub: Your Learning Management Platform</h1>
+      <p class="subtitle">Plan, track, and complete your coding courses — all in one place.</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- Add Course Form -->
+  <section class="panel add-form" aria-labelledby="add-title">
+    <h2 class="panel-title" id="add-title"><span class="dot" aria-hidden="true"></span>Add a New Course</h2>
+    <form id="addForm" novalidate>
+      <div class="form-grid">
+        <div class="field full" data-field="name">
+          <label for="add-name">Course name <span class="req" aria-hidden="true">*</span></label>
+          <input id="add-name" name="name" type="text" autocomplete="off" placeholder="e.g. Intro to Python" />
+          <span class="field-error" role="alert">Please enter a course name.</span>
+        </div>
+        <div class="field full" data-field="description">
+          <label for="add-desc">Description <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="add-desc" name="description" placeholder="What will you learn in this course?"></textarea>
+          <span class="field-error" role="alert">Please enter a description.</span>
+        </div>
+        <div class="field" data-field="target_date">
+          <label for="add-date">Target date <span class="req" aria-hidden="true">*</span></label>
+          <input id="add-date" name="target_date" type="date" />
+          <span class="field-error" role="alert">Please choose a target date.</span>
+        </div>
+        <div class="field" data-field="status">
+          <label for="add-status">Status <span class="req" aria-hidden="true">*</span></label>
+          <select id="add-status" name="status">
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <span class="field-error" role="alert">Please select a status.</span>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="addSubmit">
+          <span class="btn-label">Add Course</span>
+        </button>
+        <button type="reset" class="btn btn-ghost" id="addReset">Clear</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Course List -->
+  <section aria-labelledby="list-title">
+    <div class="toolbar">
+      <h2 id="list-title">Your Courses <span class="count-badge" id="countBadge">0</span></h2>
+      <div class="view-toggle" role="group" aria-label="View mode">
+        <button type="button" id="viewCards" class="active" aria-pressed="true">Cards</button>
+        <button type="button" id="viewTable" aria-pressed="false">Table</button>
+      </div>
+    </div>
+
+    <div class="loading-bar" id="listLoading" aria-hidden="true"></div>
+
+    <div id="listContainer">
+      <!-- cards or table injected here -->
+    </div>
+  </section>
+</main>
+
+<!-- Edit Modal -->
+<div class="overlay" id="editOverlay" role="dialog" aria-modal="true" aria-labelledby="edit-title" hidden>
+  <div class="modal" role="document">
+    <div class="modal-head">
+      <h3 id="edit-title">Edit Course</h3>
+      <button type="button" class="modal-close" id="editClose" aria-label="Close dialog">&times;</button>
+    </div>
+    <form id="editForm" novalidate>
+      <div class="modal-body">
+        <input type="hidden" id="edit-id" name="id" />
+        <div class="form-grid">
+          <div class="field full" data-field="name">
+            <label for="edit-name">Course name <span class="req" aria-hidden="true">*</span></label>
+            <input id="edit-name" name="name" type="text" autocomplete="off" />
+            <span class="field-error" role="alert">Please enter a course name.</span>
+          </div>
+          <div class="field full" data-field="description">
+            <label for="edit-desc">Description <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="edit-desc" name="description"></textarea>
+            <span class="field-error" role="alert">Please enter a description.</span>
+          </div>
+          <div class="field" data-field="target_date">
+            <label for="edit-date">Target date <span class="req" aria-hidden="true">*</span></label>
+            <input id="edit-date" name="target_date" type="date" />
+            <span class="field-error" role="alert">Please choose a target date.</span>
+          </div>
+          <div class="field" data-field="status">
+            <label for="edit-status">Status <span class="req" aria-hidden="true">*</span></label>
+            <select id="edit-status" name="status">
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <span class="field-error" role="alert">Please select a status.</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" id="editCancel">Cancel</button>
+        <button type="submit" class="btn btn-accent" id="editSubmit">
+          <span class="btn-label">Save Changes</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="overlay" id="delOverlay" role="dialog" aria-modal="true" aria-labelledby="del-title" hidden>
+  <div class="modal" role="document" style="max-width:440px;">
+    <div class="modal-head">
+      <h3 id="del-title">Remove Course</h3>
+      <button type="button" class="modal-close" id="delClose" aria-label="Close dialog">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p id="delText" style="margin:0;color:var(--ink-soft);font-size:15px;"></p>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" id="delCancel">Keep it</button>
+      <button type="button" class="btn btn-danger" id="delConfirm">
+        <span class="btn-label">Remove</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="false"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  const API = "http://127.0.0.1:5000/api/courses";
+  const STATUS_VALUES = ["Not Started", "In Progress", "Completed"];
+
+  let courses = [];
+  let viewMode = "cards";
+  let pendingDeleteId = null;
+  let lastFocusedEl = null;
+
+  // ---------- DOM refs ----------
+  const $ = (id) => document.getElementById(id);
+  const listContainer = $("listContainer");
+  const listLoading = $("listLoading");
+  const countBadge = $("countBadge");
+  const toastStack = $("toastStack");
+
+  const addForm = $("addForm");
+  const addSubmit = $("addSubmit");
+
+  const editOverlay = $("editOverlay");
+  const editForm = $("editForm");
+  const editSubmit = $("editSubmit");
+  const editClose = $("editClose");
+  const editCancel = $("editCancel");
+
+  const delOverlay = $("delOverlay");
+  const delText = $("delText");
+  const delConfirm = $("delConfirm");
+  const delCancel = $("delCancel");
+  const delClose = $("delClose");
+
+  // ---------- Helpers ----------
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function statusKey(status) {
+    const s = String(status || "").trim();
+    if (s === "In Progress") return "in-progress";
+    if (s === "Completed") return "completed";
+    return "not-started";
+  }
+
+  function formatDate(value) {
+    if (!value) return "—";
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return escapeHtml(value);
+    return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  }
+
+  function fmtDateInput(value) {
+    if (!value) return "";
+    const d = new Date(value);
+    if (isNaN(d.getTime())) {
+      // already YYYY-MM-DD?
+      return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
+    }
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  // ---------- Toasts ----------
+  function toast(message, type) {
+    type = type || "info";
+    const el = document.createElement("div");
+    el.className = "toast " + type;
+    el.setAttribute("role", type === "error" ? "alert" : "status");
+    el.innerHTML =
+      '<span class="t-msg">' + escapeHtml(message) + '</span>' +
+      '<button type="button" class="t-close" aria-label="Dismiss">&times;</button>';
+    toastStack.appendChild(el);
+    const close = () => {
+      el.style.opacity = "0";
+      el.style.transform = "translateY(8px)";
+      setTimeout(() => el.remove(), 200);
+    };
+    el.querySelector(".t-close").addEventListener("click", close);
+    setTimeout(close, 4200);
+  }
+
+  // ---------- Button busy state ----------
+  function setBtnBusy(btn, busy) {
+    if (!btn) return;
+    btn.disabled = busy;
+    const label = btn.querySelector(".btn-label");
+    if (busy) {
+      if (label) label.style.display = "none";
+      const s = document.createElement("span");
+      s.className = "spinner";
+      btn.appendChild(s);
+    } else {
+      btn.querySelectorAll(".spinner").forEach((s) => s.remove());
+      if (label) label.style.display = "";
+    }
+  }
+
+  // ---------- Validation ----------
+  function clearFieldErrors(form) {
+    form.querySelectorAll(".field.has-error").forEach((f) => f.classList.remove("has-error"));
+    form.querySelectorAll(".invalid").forEach((i) => i.classList.remove("invalid"));
+  }
+
+  function markFieldError(form, name) {
+    const field = form.querySelector('.field[data-field="' + name + '"]');
+    const input = form.querySelector('[name="' + name + '"]');
+    if (field) field.classList.add("has-error");
+    if (input) input.classList.add("invalid");
+  }
+
+  function validateForm(form) {
+    clearFieldErrors(form);
+    const data = new FormData(form);
+    let ok = true;
+    const errors = [];
+
+    const name = (data.get("name") || "").toString().trim();
+    const description = (data.get("description") || "").toString().trim();
+    const target_date = (data.get("target_date") || "").toString().trim();
+    const status = (data.get("status") || "").toString().trim();
+
+    if (!name) { markFieldError(form, "name"); errors.push("Course name is required."); ok = false; }
+    if (!description) { markFieldError(form, "description"); errors.push("Description is required."); ok = false; }
+    if (!target_date) {
+      markFieldError(form, "target_date"); errors.push("Target date is required."); ok = false;
+    } else if (!/^\d{4}-\d{2}-\d{2}$/.test(target_date)) {
+      markFieldError(form, "target_date"); errors.push("Target date must be a valid date."); ok = false;
+    }
+    if (!status) {
+      markFieldError(form, "status"); errors.push("Status is required."); ok = false;
+    } else if (STATUS_VALUES.indexOf(status) === -1) {
+      markFieldError(form, "status"); errors.push("Status must be one of: Not Started, In Progress, Completed."); ok = false;
+    }
+
+    return { ok: ok, errors: errors, values: { name: name, description: description, target_date: target_date, status: status } };
+  }
+
+  // ---------- Backend error parsing ----------
+  function extractErrors(data) {
+    if (!data) return ["Something went wrong. Please try again."];
+    if (typeof data === "string") return [data];
+    const detailList = data.details || data.errors;
+    if (Array.isArray(detailList) && detailList.length) {
+      return detailList.map((e) => {
+        if (typeof e === "string") return e;
+        if (e && e.msg) return e.msg;
+        if (e && e.message) return e.message;
+        return JSON.stringify(e);
+      });
+    }
+    if (data.details) return [typeof data.details === "string" ? data.details : JSON.stringify(data.details)];
+    if (data.error) return [typeof data.error === "string" ? data.error : JSON.stringify(data.error)];
+    if (data.message) return [typeof data.message === "string" ? data.message : JSON.stringify(data.message)];
+    if (data.detail) return [typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail)];
+    return ["Something went wrong. Please try again."];
+  }
+
+  async function apiRequest(method, url, body) {
+    const opts = { method: method, headers: {} };
+    if (body !== undefined) {
+      opts.headers["Content-Type"] = "application/json";
+      opts.body = JSON.stringify(body);
+    }
+    let res;
+    try {
+      res = await fetch(url, opts);
+    } catch (err) {
+      const e = new Error("NETWORK");
+      e.networkError = true;
+      throw e;
+    }
+    let payload = null;
+    const text = await res.text();
+    if (text) {
+      try { payload = JSON.parse(text); } catch (e) { payload = text; }
+    }
+    if (!res.ok) {
+      const e = new Error("HTTP " + res.status);
+      e.status = res.status;
+      e.payload = payload;
+      throw e;
+    }
+    return payload;
+  }
+
+  // ---------- Rendering ----------
+  function render() {
+    countBadge.textContent = String(courses.length);
+    listContainer.innerHTML = "";
+
+    if (courses.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "state";
+      empty.innerHTML =
+        '<div class="icon" aria-hidden="true">' +
+          '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>' +
+        '</div>' +
+        '<h3>No courses yet</h3>' +
+        '<p>Add your first course using the form above to start tracking your learning.</p>';
+      listContainer.appendChild(empty);
+      return;
+    }
+
+    if (viewMode === "table") renderTable();
+    else renderCards();
+  }
+
+  function renderCards() {
+    const grid = document.createElement("div");
+    grid.className = "cards";
+    courses.forEach((c) => grid.appendChild(buildCard(c)));
+    listContainer.appendChild(grid);
+  }
+
+  function buildCard(c) {
+    const card = document.createElement("article");
+    card.className = "course-card";
+    card.setAttribute("aria-label", escapeHtml(c.name));
+
+    const safeName = escapeHtml(c.name);
+    const safeDesc = escapeHtml(c.description);
+    const safeDate = escapeHtml(fmtDateInput(c.target_date));
+    const safeCreated = formatDate(c.created_at);
+    const sk = statusKey(c.status);
+    const safeStatus = escapeHtml(c.status);
+
+    card.innerHTML =
+      '<div class="card-head">' +
+        '<h3 class="card-title">' + safeName + '</h3>' +
+        '<span class="badge badge-' + sk + '" title="Status: ' + safeStatus + '">' + safeStatus + '</span>' +
+      '</div>' +
+      '<p class="card-desc">' + safeDesc + '</p>' +
+      '<div class="card-meta">' +
+        '<div class="meta-row">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
+          '<span class="label">Target:</span> <span class="value">' + formatDate(c.target_date) + '</span>' +
+        '</div>' +
+        '<div class="meta-row">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+          '<span class="label">Created:</span> <span class="value">' + safeCreated + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-actions">' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-edit="' + c.id + '">Edit</button>' +
+        '<button type="button" class="btn btn-danger btn-sm" data-delete="' + c.id + '">Remove</button>' +
+      '</div>';
+
+    card.querySelector('[data-edit]').addEventListener("click", () => openEdit(c));
+    card.querySelector('[data-delete]').addEventListener("click", () => openDelete(c));
+    return card;
+  }
+
+  function renderTable() {
+    const wrap = document.createElement("div");
+    wrap.className = "table-scroll";
+    const table = document.createElement("table");
+    table.className = "courses";
+    table.innerHTML =
+      '<thead><tr>' +
+        '<th>Name</th><th>Description</th><th>Target Date</th><th>Status</th><th>Created</th><th>Actions</th>' +
+      '</tr></thead><tbody></tbody>';
+    const tbody = table.querySelector("tbody");
+    courses.forEach((c) => {
+      const tr = document.createElement("tr");
+      const sk = statusKey(c.status);
+      tr.innerHTML =
+        '<td class="name">' + escapeHtml(c.name) + '</td>' +
+        '<td class="desc">' + escapeHtml(c.description) + '</td>' +
+        '<td>' + formatDate(c.target_date) + '</td>' +
+        '<td><span class="badge badge-' + sk + '">' + escapeHtml(c.status) + '</span></td>' +
+        '<td>' + formatDate(c.created_at) + '</td>' +
+        '<td class="actions">' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-edit="' + c.id + '">Edit</button>' +
+          '<button type="button" class="btn btn-danger btn-sm" data-delete="' + c.id + '">Remove</button>' +
+        '</td>';
+      tr.querySelector('[data-edit]').addEventListener("click", () => openEdit(c));
+      tr.querySelector('[data-delete]').addEventListener("click", () => openDelete(c));
+      tbody.appendChild(tr);
+    });
+    wrap.appendChild(table);
+    listContainer.appendChild(wrap);
+  }
+
+  // ---------- Data loading ----------
+  async function loadCourses() {
+    listLoading.classList.add("active");
+    listContainer.innerHTML =
+      '<div class="state"><div class="icon"><span class="spinner dark"></span></div>' +
+      '<h3>Loading your courses…</h3><p>Hang tight.</p></div>';
+    try {
+      const data = await apiRequest("GET", API);
+      courses = Array.isArray(data) ? data : (data && Array.isArray(data.courses) ? data.courses : []);
+      render();
+    } catch (err) {
+      listContainer.innerHTML =
+        '<div class="state error"><div class="icon">' +
+          '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+        '</div><h3>Could not load courses</h3><p>' +
+        (err.networkError
+          ? "Could not reach the server. Make sure the backend is running at " + escapeHtml(API) + "."
+          : "The server returned an error. Please try again in a moment.") +
+        '</p><div style="margin-top:16px;"><button type="button" class="btn btn-primary" id="retryBtn">Try again</button></div></div>';
+      $("retryBtn").addEventListener("click", loadCourses);
+      toast("Failed to load courses.", "error");
+    } finally {
+      listLoading.classList.remove("active");
+    }
+  }
+
+  // ---------- Create ----------
+  addForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const v = validateForm(addForm);
+    if (!v.ok) {
+      toast(v.errors[0] || "Please fix the highlighted fields.", "error");
+      return;
+    }
+    setBtnBusy(addSubmit, true);
+    try {
+      const created = await apiRequest("POST", API, v.values);
+      toast("Course added successfully.", "success");
+      addForm.reset();
+      addForm.querySelector('[name="status"]').value = "Not Started";
+      courses.push(created);
+      render();
+    } catch (err) {
+      const msgs = extractErrors(err.payload);
+      toast(msgs.join(" "), "error");
+    } finally {
+      setBtnBusy(addSubmit, false);
+    }
+  });
+
+  addForm.addEventListener("reset", () => {
+    clearFieldErrors(addForm);
+  });
+  // Live-clear field error on input
+  addForm.addEventListener("input", (e) => {
+    const f = e.target.closest(".field");
+    if (f && f.classList.contains("has-error")) f.classList.remove("has-error");
+    if (e.target.classList.contains("invalid")) e.target.classList.remove("invalid");
+  });
+
+  // ---------- Edit modal ----------
+  function openEdit(course) {
+    clearFieldErrors(editForm);
+    $("edit-id").value = course.id;
+    $("edit-name").value = course.name || "";
+    $("edit-desc").value = course.description || "";
+    $("edit-date").value = fmtDateInput(course.target_date);
+    const st = STATUS_VALUES.indexOf(course.status) !== -1 ? course.status : "Not Started";
+    $("edit-status").value = st;
+    lastFocusedEl = document.activeElement;
+    editOverlay.hidden = false;
+    requestAnimationFrame(() => {
+      editOverlay.classList.add("active");
+      $("edit-name").focus();
+    });
+  }
+
+  function closeEdit() {
+    editOverlay.classList.remove("active");
+    setTimeout(() => { editOverlay.hidden = true; }, 160);
+    if (lastFocusedEl && lastFocusedEl.focus) lastFocusedEl.focus();
+  }
+
+  editClose.addEventListener("click", closeEdit);
+  editCancel.addEventListener("click", closeEdit);
+  editOverlay.addEventListener("click", (e) => { if (e.target === editOverlay) closeEdit(); });
+
+  editForm.addEventListener("input", (e) => {
+    const f = e.target.closest(".field");
+    if (f && f.classList.contains("has-error")) f.classList.remove("has-error");
+    if (e.target.classList.contains("invalid")) e.target.classList.remove("invalid");
+  });
+
+  editForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const id = $("edit-id").value;
+    const v = validateForm(editForm);
+    if (!v.ok) {
+      toast(v.errors[0] || "Please fix the highlighted fields.", "error");
+      return;
+    }
+    setBtnBusy(editSubmit, true);
+    try {
+      const updated = await apiRequest("PUT", API + "/" + encodeURIComponent(id), v.values);
+      const idx = courses.findIndex((c) => String(c.id) === String(id));
+      if (idx !== -1) courses[idx] = updated || Object.assign({}, courses[idx], v.values);
+      render();
+      closeEdit();
+      toast("Course updated successfully.", "success");
+    } catch (err) {
+      const msgs = extractErrors(err.payload);
+      toast(msgs.join(" "), "error");
+    } finally {
+      setBtnBusy(editSubmit, false);
+    }
+  });
+
+  // ---------- Delete modal ----------
+  function openDelete(course) {
+    pendingDeleteId = course.id;
+    delText.innerHTML = 'Are you sure you want to remove <strong>' + escapeHtml(course.name) + '</strong>? This action cannot be undone.';
+    lastFocusedEl = document.activeElement;
+    delOverlay.hidden = false;
+    requestAnimationFrame(() => {
+      delOverlay.classList.add("active");
+      delConfirm.focus();
+    });
+  }
+
+  function closeDelete() {
+    delOverlay.classList.remove("active");
+    setTimeout(() => { delOverlay.hidden = true; }, 160);
+    pendingDeleteId = null;
+    if (lastFocusedEl && lastFocusedEl.focus) lastFocusedEl.focus();
+  }
+
+  delClose.addEventListener("click", closeDelete);
+  delCancel.addEventListener("click", closeDelete);
+  delOverlay.addEventListener("click", (e) => { if (e.target === delOverlay) closeDelete(); });
+
+  delConfirm.addEventListener("click", async () => {
+    if (pendingDeleteId === null) return;
+    const id = pendingDeleteId;
+    setBtnBusy(delConfirm, true);
+    try {
+      await apiRequest("DELETE", API + "/" + encodeURIComponent(id));
+      courses = courses.filter((c) => String(c.id) !== String(id));
+      render();
+      closeDelete();
+      toast("Course removed.", "success");
+    } catch (err) {
+      const msgs = extractErrors(err.payload);
+      toast(msgs.join(" "), "error");
+    } finally {
+      setBtnBusy(delConfirm, false);
+    }
+  });
+
+  // ---------- Keyboard ----------
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      if (editOverlay.classList.contains("active")) closeEdit();
+      else if (delOverlay.classList.contains("active")) closeDelete();
+    }
+  });
+
+  // ---------- View toggle ----------
+  $("viewCards").addEventListener("click", () => switchView("cards"));
+  $("viewTable").addEventListener("click", () => switchView("table"));
+  function switchView(mode) {
+    if (mode === viewMode) return;
+    viewMode = mode;
+    const c = $("viewCards"), t = $("viewTable");
+    const on = mode === "cards" ? c : t;
+    const off = mode === "cards" ? t : c;
+    on.classList.add("active"); on.setAttribute("aria-pressed", "true");
+    off.classList.remove("active"); off.setAttribute("aria-pressed", "false");
+    render();
+  }
+
+  // ---------- Init ----------
+  loadCourses();
+})();
+</script>
+</body>
+</html>
